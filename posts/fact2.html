@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Amazing Brain Facts</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <!-- Replicate the structure of fact1.html but with new content -->
+    <div class="card">
+        <h1>Another Amazing Brain Fact!</h1>
+        <p>The human brain weighs about 3 pounds, but uses up to 20% of the body's total energy!</p>
+        <a href="../index.html">← Back Home</a>
+    </div>
+</body>
+</html>
+Step 2: Update index.html to Link the New Fact
+Now that you have fact2.html, let's make sure your homepage recognizes it!
+
+Action: Go into your `index.html` and add a new card in the <section class="articles"> area that links to this new post.
+
+Where to look in `index.html`: Find this section:
+
+html
+<section class="articles">
+    <div class="card">
+        <h2>🧠 Human Brain</h2>
+        <p>The human brain contains billions of neurons.</p>
+        <a href="posts/fact1.html">Read Article →</a>
+    </div>
+    <!-- Add your new fact link here! -->
+    <div class="card">
+        <h2>✨ New Fact Here</h2>
+        <p>The human brain weighs about 3 pounds, but uses up to 20% of the body's total energy!</p>
+        <a href="posts/fact2.html">Read Article →</a> 
+    </div>
+    <!-- ... other cards ... -->
+</section>
