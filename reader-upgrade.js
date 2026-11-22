@@ -278,3 +278,39 @@
     if(document.querySelector('#fact-search')) updateHome(articles,content);
   });
 })();
+// FACTFORGE HOMEPAGE READING-TIME FIX
+(() => {
+  if (!document.querySelector(".card")) return;
+  const scriptURL = document.currentScript?.src || location.href;
+  const words = value => String(value || "").trim().split(/\s+/).filter(Boolean).length;
+  const expandedWords = record => {
+    if (!record || !Array.isArray(record.sections)) return 0;
+    return words(record.deck)
+      + (record.takeaways || []).reduce((n, x) => n + words(x), 0)
+      + record.sections.reduce((n, s) =>
+          n + words(s.heading) + words(s.quote)
+          + (s.paragraphs || []).reduce((m, x) => m + words(x), 0)
+          + (s.bullets || []).reduce((m, x) => m + words(x), 0), 0);
+  };
+  const load = filename => fetch(new URL(filename, scriptURL), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  Promise.all([load("articles.json"), load("post-content.json")]).then(([articles, content]) => {
+    const originals = new Map((Array.isArray(articles) ? articles : [])
+      .filter(a => a && a.slug).map(a => [a.slug, a]));
+    document.querySelectorAll(".card").forEach(card => {
+      const link = card.querySelector("a.article-link[href], h3 a[href], a[href*='posts/']");
+      const label = card.querySelector(".card-kicker");
+      if (!link || !label) return;
+      const slug = decodeURIComponent(new URL(link.href, location.href).pathname
+        .split("/").pop()).replace(/\.html$/i, "");
+      const original = originals.get(slug);
+      const baseWords = Number(original?.words) ||
+        words((original?.paragraphs || []).join(" "));
+      const total = baseWords + expandedWords(content?.[slug]);
+      if (!total) return;
+      const minutes = Math.max(1, Math.ceil(total / 200));
+      label.textContent = label.textContent.replace(/\b\d+\s*min(?:ute)?s?\s*read\b/i,
+        `${minutes} MIN READ`);
+    });
+  });
+})();
