@@ -1,30 +1,14 @@
-FACTFORGE — 125 BLOG POSTS
+FACTFORGE HOMEPAGE READING-TIME FIX
 
-WHAT IS INCLUDED
-125 complete short blog posts, 128–148 words each (17,392 words total), selected from your Topics document. Each has its own HTML page. Related attention and habit posts adapt themes from your supplied focus manuscript.
+Issue: Blog post pages show updated durations (for example 14 min), but homepage cards may still say 1 MIN READ because the original homepage HTML has a fixed label.
 
-College & Work: 30 posts
-Wellbeing: 30 posts
-Health & Movement: 30 posts
-Knowledge & Safety: 27 posts
-Mindset: 8 posts
+1. Open https://github.com/mysticjason165/factforge
+2. In the main/root folder, open reader-upgrade.js.
+3. Click Edit (pencil), replace its contents with the included reader-upgrade.js and commit to the SAME branch GitHub Pages uses.
+4. Leave your existing script.js, post-content.json, article pages, and all other files in place.
+5. After the GitHub Pages workflow completes, refresh the home page with Ctrl + Shift + R.
+6. Check the two expanded guides. Home and post page durations should now agree (minor variations are possible if articles.json is out of sync with the HTML).
 
-The original technical topic titles were simplified. Unsupported promises were removed. The source-topic mapping is in topic-map.json; editable article text is in articles.json. These JSON files are optional reference files and are not required for the website to run. Editing JSON alone does not update the HTML pages.
+Only the campus side hustle and sleep articles are expanded in the starter package. Other articles still have about one minute of actual text. This fix does not pretend they are all 10-20-minute reads.
 
-INSTALL ON YOUR EXISTING GITHUB PAGES SITE
-1. Extract this ZIP.
-2. Open index.html to preview locally with the other files beside it.
-3. Replace index.html, style.css, and script.js in the existing FactForge repository.
-4. Copy the included posts and assets folders into that same repository root, keeping their folder structure. Merge the posts folder; do not delete unrelated existing articles.
-5. Commit the files through your usual GitHub workflow. The website has not been published or changed online by this handoff.
-
-The homepage lists all posts without JavaScript; JavaScript adds search, categories and 12-post pages. Category URLs and article links use relative paths for /factforge/ hosting. Article pages also work locally. No installation, backend, or API key is needed.
-
-EDITORIAL NOTES
-These are concise practical guides and perspectives, not 125 scientific fact claims or long-form articles. Selected health and digital-safety posts include links to checked sources. General health content does not provide personal treatment plans. The source manuscript itself is not included in the public website.
-
-PHOTOGRAPHY
-The three bundled images are from Unsplash: mk. s (desk), Clement M. (forest), and Nadine Primeau (food). Source and Unsplash License links appear in the homepage credits. They replace the earlier nebula, brain and elephant images.
-
-VALIDATION
-Checked 126 HTML pages, 2,396 local links and asset references, unique topic mappings and distinct post bodies. JavaScript tests covered all category totals, search and empty results, pagination, clear filters, category deep links, theme persistence, blocked local storage, article-page initialization, and the daily article link. Browser rendering was not tested.
+If the homepage still says 1 MIN READ for a clearly longer article, check that it actually uses the newest reader-upgrade.js by opening https://mysticjason165.github.io/factforge/reader-upgrade.js and searching for "Some older FactForge cards". If it doesn't, the published JS is an older copy.

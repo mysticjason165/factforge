@@ -113,18 +113,37 @@
     return f;
   }
   function updateHome(articles, content) {
-    const bySlug = new Map(articles.map(a => [a.slug,a]));
+    // Update the home-page cards to agree with the expanded article pages.
+    // Some older FactForge cards link only their "Read post" button, not the H3 title.
+    // Do not require a match in articles.json: an expanded record is sufficient.
+    const bySlug = new Map((Array.isArray(articles) ? articles : [])
+      .filter(article => article && article.slug)
+      .map(article => [article.slug, article]));
     document.querySelectorAll('.card').forEach(card => {
-      const href = card.querySelector('h3 a')?.href;
-      if (!href) return;
-      const slug = slugOf(href);
+      const link = card.querySelector('a.article-link[href]') ||
+        card.querySelector('h3 a[href]') ||
+        card.querySelector('a[href*="/posts/"]') ||
+        card.querySelector('a[href^="posts/"]');
+      if (!link) return;
+      const slug = slugOf(link.href);
       const article = bySlug.get(slug);
-      if (!article) return;
-      const minutes = Math.max(1, Math.ceil(((article.words || countWords((article.paragraphs || []).join(' '))) + upgradedWords(content[slug])) / 200));
-      const kicker = card.querySelector('.card-kicker');
-      if (kicker) kicker.textContent = kicker.textContent.replace(/\d+\s*MIN READ/i, `${minutes} MIN READ`);
+      const expanded = content[slug];
+      if (!article && !expanded) return;
+      const baseWords = Number(article?.words) > 0 ? Number(article.words) :
+        Array.isArray(article?.paragraphs) ? countWords(article.paragraphs.join(' ')) : 0;
+      const addedWords = upgradedWords(expanded);
+      if (baseWords <= 0 && addedWords <= 0) return;
+      const minutes = Math.max(1, Math.ceil((baseWords + addedWords) / 200));
+      const label = card.querySelector('.card-kicker');
+      if (!label) return;
+      if (/\b\d+\s*min(?:ute)?s?\s*read\b/i.test(label.textContent)) {
+        label.textContent = label.textContent.replace(/\b\d+\s*min(?:ute)?s?\s*read\b/i, `${minutes} MIN READ`);
+      } else if (!/\bmin(?:ute)?s?\s*read\b/i.test(label.textContent)) {
+        label.textContent = `${label.textContent.trim()} · ${minutes} MIN READ`;
+      }
     });
   }
+
   function addProgress(){
     const progress = create('div','ff-progress');
     progress.setAttribute('aria-hidden','true');
@@ -276,41 +295,5 @@
     if(!content || Array.isArray(content) || typeof content!=='object') content={};
     if(document.querySelector('main.post-wrap article')) buildPost(content,articles);
     if(document.querySelector('#fact-search')) updateHome(articles,content);
-  });
-})();
-// FACTFORGE HOMEPAGE READING-TIME FIX
-(() => {
-  if (!document.querySelector(".card")) return;
-  const scriptURL = document.currentScript?.src || location.href;
-  const words = value => String(value || "").trim().split(/\s+/).filter(Boolean).length;
-  const expandedWords = record => {
-    if (!record || !Array.isArray(record.sections)) return 0;
-    return words(record.deck)
-      + (record.takeaways || []).reduce((n, x) => n + words(x), 0)
-      + record.sections.reduce((n, s) =>
-          n + words(s.heading) + words(s.quote)
-          + (s.paragraphs || []).reduce((m, x) => m + words(x), 0)
-          + (s.bullets || []).reduce((m, x) => m + words(x), 0), 0);
-  };
-  const load = filename => fetch(new URL(filename, scriptURL), { cache: "no-store" })
-    .then(r => r.ok ? r.json() : null).catch(() => null);
-  Promise.all([load("articles.json"), load("post-content.json")]).then(([articles, content]) => {
-    const originals = new Map((Array.isArray(articles) ? articles : [])
-      .filter(a => a && a.slug).map(a => [a.slug, a]));
-    document.querySelectorAll(".card").forEach(card => {
-      const link = card.querySelector("a.article-link[href], h3 a[href], a[href*='posts/']");
-      const label = card.querySelector(".card-kicker");
-      if (!link || !label) return;
-      const slug = decodeURIComponent(new URL(link.href, location.href).pathname
-        .split("/").pop()).replace(/\.html$/i, "");
-      const original = originals.get(slug);
-      const baseWords = Number(original?.words) ||
-        words((original?.paragraphs || []).join(" "));
-      const total = baseWords + expandedWords(content?.[slug]);
-      if (!total) return;
-      const minutes = Math.max(1, Math.ceil(total / 200));
-      label.textContent = label.textContent.replace(/\b\d+\s*min(?:ute)?s?\s*read\b/i,
-        `${minutes} MIN READ`);
-    });
   });
 })();
