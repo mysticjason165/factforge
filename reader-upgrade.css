@@ -1,0 +1,32 @@
+/* FactForge Long-Form Upgrade. Scoped to .ff-* so your original design stays intact. */
+.ff-deck{font-size:clamp(19px,2.3vw,25px);line-height:1.55;color:var(--muted);margin:20px 0 27px;border-left:4px solid #98b74b;padding-left:20px}
+.ff-hero{position:relative;margin:30px 0 24px;overflow:hidden;border-radius:12px;background:var(--soft)}
+.ff-hero img{width:100%;aspect-ratio:16/8.5;object-fit:cover;display:block}
+.ff-hero figcaption,.ff-figure figcaption{font-size:12px;color:var(--muted);line-height:1.45;padding:10px 0 0}
+.ff-container{width:100%}.ff-snapshot{border:1px solid var(--line);background:var(--soft);padding:23px 26px;border-radius:11px;margin:22px 0 26px}
+.ff-snapshot h2,.ff-toc h2{font-family:Georgia,serif;font-size:25px;margin:0 0 10px;letter-spacing:-.4px}
+.ff-snapshot ul{margin:8px 0 0;padding-left:21px}.ff-snapshot li{margin:9px 0}
+.ff-toc{padding:19px 23px;border:1px solid var(--line);border-radius:10px;margin:30px 0;background:var(--paper)}
+.ff-toc ol{margin:10px 0;padding-left:22px;columns:2;column-gap:28px}
+.ff-toc li{break-inside:avoid;padding:4px 0;font-size:14px}.ff-toc a{text-decoration:underline;text-decoration-color:#8ba85a;text-underline-offset:3px}
+.ff-section{padding-top:15px}.ff-section h2{font-family:Georgia,serif;line-height:1.18;font-size:clamp(26px,3.2vw,37px);letter-spacing:-.6px;margin:40px 0 15px;scroll-margin-top:32px}
+.ff-section p{margin:0 0 19px}.ff-section ul,.ff-section ol{padding-left:25px;margin:0 0 21px}.ff-section li{margin:9px 0}
+.ff-section blockquote{margin:24px 0;padding:18px 24px;border-left:4px solid #8ba85a;background:var(--soft);font-family:Georgia,serif;font-size:20px}
+.ff-figure{margin:30px 0 36px}.ff-figure img{display:block;width:100%;height:auto;max-height:470px;object-fit:cover;border-radius:9px}
+.ff-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:35px 0}
+.ff-photo-grid figure{margin:0;min-width:0}.ff-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;background:var(--soft);display:block}
+.ff-photo-grid figcaption{font-size:12px;color:var(--muted);padding-top:6px;line-height:1.5}
+.ff-video{margin:46px 0;padding:24px;background:var(--soft);border:1px solid var(--line);border-radius:11px}
+.ff-video h2{font-family:Georgia,serif;font-size:26px;line-height:1.3;margin:0 0 10px}.ff-video p{color:var(--muted);margin:0 0 15px}
+.ff-video a,.ff-video button,.ff-actions button{background:var(--green);color:#fff;border:0;border-radius:5px;display:inline-flex;align-items:center;gap:8px;padding:11px 15px;font-size:14px;font-weight:bold}
+.ff-video button:hover,.ff-actions button:hover{filter:brightness(1.1)}.ff-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:8px;margin-top:19px}
+.ff-actions{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding:24px 0 5px;margin:15px 0}
+.ff-actions button{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.ff-progress{position:fixed;top:0;left:0;right:auto;height:4px;width:0%;background:#88b447;z-index:100;pointer-events:none}
+.ff-banner{font-size:12px;color:var(--muted);margin:16px 0}.ff-unavailable{background:var(--soft);padding:15px;border-radius:6px}
+.post-prose .ff-section{font-size:17px;line-height:1.83}.post-prose>.ff-figure,.post-prose>.ff-section{max-width:100%}
+@media(max-width:700px){.ff-toc ol{columns:1}.ff-photo-grid{grid-template-columns:1fr;gap:23px}.ff-photo-grid img{aspect-ratio:16/10}.ff-snapshot,.ff-toc,.ff-video{padding:18px}.ff-hero img{aspect-ratio:4/3}.ff-actions{justify-content:center}}
+@media(prefers-reduced-motion:reduce){.ff-progress{transition:none}}
+@media print{.ff-progress,.ff-video,.ff-actions,.ff-toc{display:none}.ff-section h2{break-after:avoid}.ff-hero img{max-height:250px}}
+
+.ff-sources{margin:30px 0;padding:20px;border-top:1px solid var(--line);background:var(--paper)}.ff-sources h2{font-family:Georgia,serif;font-size:24px;margin:0 0 10px}.ff-sources ul{padding-left:20px;margin:0}.ff-sources li{padding:5px 0}.ff-sources a{text-decoration:underline;text-underline-offset:3px}

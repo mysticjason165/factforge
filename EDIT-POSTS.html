@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FactForge — Article Editor</title>
+<style>
+:root{font-family:system-ui,Arial,sans-serif;background:#f5f7f1;color:#1e3024}*{box-sizing:border-box}body{margin:0}header{background:#233e2b;color:#fff;padding:26px 4vw}header h1{margin:0 0 6px}header p{margin:0;color:#cfddce}main{max-width:1070px;margin:28px auto;padding:0 22px}section,.section-card{background:#fff;padding:22px;border:1px solid #dfe6dc;border-radius:12px;margin:0 0 21px}label{display:block;font-weight:700;margin:15px 0 6px}textarea,input[type=text],input[type=url],select{width:100%;padding:10px 12px;font:inherit;border:1px solid #bccab8;border-radius:7px;background:white;color:#1e3024}textarea{min-height:85px;line-height:1.55}textarea.long{min-height:190px}button,.file-button{padding:10px 15px;border-radius:7px;background:#254832;color:white;border:0;cursor:pointer;font:inherit;margin:8px 8px 3px 0}button.secondary{background:#e9f0e3;color:#1c3222}.bar{display:flex;align-items:center;flex-wrap:wrap;gap:9px}.hint{font-size:13px;color:#627265}.section-card{border-color:#d3ddcf;padding:18px;background:#f8faf6}h2{margin-top:0;font-size:21px}h3{margin:0;font-size:18px}.files{display:grid;grid-template-columns:1fr 1fr;gap:18px}.hidden{display:none}#status{background:#e5efdb;padding:13px 17px;border-radius:8px}.note{font-size:14px;border-left:4px solid #9cb767;padding-left:12px}@media(max-width:600px){.files{grid-template-columns:1fr}}@media print{button{display:none}}
+</style></head>
+<body><header><h1>✳ FactForge · Article Editor</h1><p>Edit longer articles, 3–5 custom photos, and YouTube links. Export one JSON file — no coding needed.</p></header>
+<main>
+<section><h2>1. Open your existing files</h2><p>Open this file using a local web server or on your website. If nothing loads automatically, choose your two repository files below. Everything stays in your browser until you download the JSON.</p>
+<div class="files"><label>Original articles.json<input type="file" id="articles-file" accept=".json,application/json"></label><label>Existing post-content.json<input type="file" id="content-file" accept=".json,application/json"></label></div><p class="hint">Tip: In a terminal, run <code>python -m http.server 8000</code> in your FactForge folder and open <code>http://localhost:8000/EDIT-POSTS.html</code>.</p></section>
+<section><h2>2. Edit an article</h2><label for="post">Choose one of the 125 posts</label><select id="post"><option value="">Loading articles…</option></select><p id="reading" class="hint"></p>
+<label for="deck">Introductory summary</label><textarea id="deck" placeholder="A short introduction to this guide…"></textarea>
+<label for="takeaways">Key takeaways (one per line)</label><textarea id="takeaways" placeholder="One practical lesson per line"></textarea>
+<div class="bar"><h3 style="margin-right:auto">Article sections</h3><button id="add" class="secondary" type="button">+ Add section</button></div>
+<p class="hint">Write a descriptive heading and at least two substantial paragraphs for each section. Separate paragraphs with one blank line.</p>
+<div id="sections"></div>
+<label for="youtube">YouTube URL (optional)</label><input id="youtube" type="url" placeholder="https://www.youtube.com/watch?v=...">
+<label for="images">Custom photo URLs (optional, 3–5 lines)</label><textarea class="long" id="images" placeholder="https://example.com/photo1.jpg | Descriptive alt text | Optional caption&#10;https://example.com/photo2.jpg | Descriptive alt text | Optional caption&#10;https://example.com/photo3.jpg | Descriptive alt text | Optional caption"></textarea>
+<p class="hint">Leave images blank to use four starter Unsplash photos automatically. Use images you are allowed to publish.</p>
+<div class="bar"><button id="save" type="button">✓ Save this article</button><button id="download" type="button">⬇ Download post-content.json</button></div>
+<p id="status" role="status">Choose a post and start writing. Download when you are ready to publish.</p>
+</section>
+<section><h2>3. Publish to FactForge</h2><p>After downloading, replace <strong>post-content.json</strong> in the root of your GitHub repository. Your existing article pages will display the new text, photos, and video link automatically — no editing 125 separate HTML files.</p><p class="note"><strong>Important:</strong> Your update is not live until you upload your downloaded JSON file to GitHub. Drafts with fewer than approximately 2,000 total words will correctly display a shorter reading time.</p></section>
+</main>
+<script>
+'use strict';
+(()=>{
+const $=id=>document.getElementById(id);
+let articles=[],content={},lastSlug='';
+const count=t=>String(t||'').trim().split(/\s+/).filter(Boolean).length;
+function totalWords(slug){
+ const a=articles.find(p=>p.slug===slug)||{};const d=content[slug]||{};
+ return (a.words||count((a.paragraphs||[]).join(' ')))+count(d.deck)+(d.takeaways||[]).reduce((n,s)=>n+count(s),0)+(d.sections||[]).reduce((n,s)=>n+count(s.heading)+(s.paragraphs||[]).reduce((n,p)=>n+count(p),0)+(s.bullets||[]).reduce((n,p)=>n+count(p),0),0);
+}
+function estimate(){const slug=$('post').value;if(!slug){$('reading').textContent='';return}const n=totalWords(slug);$('reading').textContent=`Current saved article: ${n} words ≈ ${Math.max(1,Math.ceil(n/200))} minute(s). Target for 10–20 minutes: about 2,000–4,000 words.`;}
+function sectionCard(section={}){
+ const box=document.createElement('div');box.className='section-card';
+ const head=document.createElement('input');head.type='text';head.placeholder='Section heading';head.className='section-heading';head.value=section.heading||'';
+ const text=document.createElement('textarea');text.className='long section-text';text.placeholder='First full paragraph…\n\nSecond full paragraph…';text.value=(section.paragraphs||[]).join('\n\n');
+ const label=document.createElement('label');label.textContent='Section heading';label.append(head);
+ const second=document.createElement('label');second.textContent='Paragraphs (separate with a blank line)';second.append(text);
+ const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove section';remove.addEventListener('click',()=>box.remove());
+ box.append(label,second,remove);$('sections').append(box);
+}
+function getForm(){
+ const data={deck:$('deck').value.trim(),takeaways:$('takeaways').value.split('\n').map(s=>s.trim()).filter(Boolean),sections:[],youtubeUrl:$('youtube').value.trim()};
+ document.querySelectorAll('.section-card').forEach(box=>{
+  const heading=box.querySelector('.section-heading').value.trim();
+  const paragraphs=box.querySelector('.section-text').value.trim().split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+  if(heading && paragraphs.length)data.sections.push({heading,paragraphs});
+ });
+ const images=$('images').value.split('\n').map(s=>s.trim()).filter(Boolean).map(line=>{
+   const [src,alt,caption]=line.split('|').map(s=>s.trim());return {src,alt,caption:caption||alt};
+ });
+ if(images.length) data.images=images;
+ return data;
+}
+function saveCurrent(){
+ if(!lastSlug)return;
+ const prev=content[lastSlug]||{};
+ const updated=getForm();
+ // Preserve existing optional advanced fields, e.g. bulleted lists in generated drafts.
+ updated.sections.forEach((section,i)=>{
+   const old=(prev.sections||[])[i];
+   if(old && old.heading===section.heading && old.bullets)section.bullets=old.bullets;
+ });
+ content[lastSlug]={...prev,...updated};
+ estimate();
+}
+function setForm(slug){
+ lastSlug=slug;const d=content[slug]||{};
+ $('deck').value=d.deck||'';$('takeaways').value=(d.takeaways||[]).join('\n');
+ $('youtube').value=d.youtubeUrl||d.videoUrl||'';
+ $('images').value=(d.images||[]).map(p=>[p.src,p.alt,p.caption||''].join(' | ')).join('\n');
+ $('sections').replaceChildren();(d.sections||[]).forEach(sectionCard);
+ estimate();$('status').textContent=slug?'Editing '+slug:'Choose a post to begin.';
+}
+function populate(){
+ const sel=$('post'),current=sel.value||lastSlug;
+ sel.replaceChildren();
+ const empty=document.createElement('option');empty.value='';empty.textContent='Select an article';sel.append(empty);
+ articles.forEach(a=>{const option=document.createElement('option');option.value=a.slug;option.textContent=`${a.id||''} — ${a.title}`;sel.append(option)});
+ if(articles.some(a=>a.slug===current)){sel.value=current;setForm(current)}else if(articles.length){sel.value=articles[0].slug;setForm(sel.value)}
+}
+$('post').addEventListener('change',()=>{saveCurrent();setForm($('post').value)});
+$('add').addEventListener('click',()=>sectionCard());
+$('save').addEventListener('click',()=>{saveCurrent();$('status').textContent='✓ Saved in this browser session. Download the JSON file to keep your changes.'});
+$('download').addEventListener('click',()=>{
+ saveCurrent();
+ const blob=new Blob([JSON.stringify(content,null,2)+'\n'],{type:'application/json'});
+ const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='post-content.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),30000);
+ $('status').textContent='✓ Downloaded post-content.json. Upload it to GitHub to publish changes.';
+});
+async function loadFile(file){if(!file)return null;return JSON.parse(await file.text())}
+$('articles-file').addEventListener('change',async e=>{try{const v=await loadFile(e.target.files[0]);if(!Array.isArray(v))throw Error('Not an article array');saveCurrent();articles=v;populate();}catch(err){$('status').textContent='Error loading articles.json: '+err.message}});
+$('content-file').addEventListener('change',async e=>{try{const v=await loadFile(e.target.files[0]);if(!v || Array.isArray(v) || typeof v!=='object')throw Error('Not a JSON object');saveCurrent();content=v;setForm($('post').value);}catch(err){$('status').textContent='Error loading post-content.json: '+err.message}});
+Promise.all([fetch('articles.json').then(r=>r.ok?r.json():[]).catch(()=>[]),fetch('post-content.json').then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([a,c])=>{
+ articles=Array.isArray(a)?a:[];content=(c && typeof c==='object' && !Array.isArray(c))?c:{};populate();
+ if(!articles.length)$('status').textContent='Choose articles.json and post-content.json using the file inputs above.';
+});
+})();
+</script></body></html>
