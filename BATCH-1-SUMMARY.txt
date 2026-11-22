@@ -1,0 +1,32 @@
+FACTFORGE — LONG-FORM BATCH 1 OF 25
+=================================
+5 new full articles; your 2 previously completed articles are preserved byte-for-byte in content values.
+
+Build a Portfolio Before You Have Paying Clients
+- New extra text: 2,299 words; original: 143; combined: ~2,442 words; estimated site reading time: 13 min
+- 12 sections; four category-based photos from the existing reader-upgrade.js; optional YouTube search
+
+Turn One Original Idea into Several Digital Products
+- New extra text: 2,269 words; original: 141; combined: ~2,410 words; estimated site reading time: 13 min
+- 12 sections; four category-based photos from the existing reader-upgrade.js; optional YouTube search
+
+Make Educational Content That Answers a Real Question
+- New extra text: 2,293 words; original: 139; combined: ~2,432 words; estimated site reading time: 13 min
+- 12 sections; four category-based photos from the existing reader-upgrade.js; optional YouTube search
+
+Test a Custom Product Before Ordering a Big Batch
+- New extra text: 2,288 words; original: 148; combined: ~2,436 words; estimated site reading time: 13 min
+- 12 sections; four category-based photos from the existing reader-upgrade.js; optional YouTube search
+
+Prepare for Remote Work with One Demonstrable Skill
+- New extra text: 2,275 words; original: 141; combined: ~2,416 words; estimated site reading time: 13 min
+- 12 sections; four category-based photos from the existing reader-upgrade.js; optional YouTube search
+
+DO THIS IN GITHUB:
+1. Keep a backup of the current GitHub post-content.json before editing.
+2. Open https://github.com/mysticjason165/factforge
+3. Locate the existing post-content.json in the same published directory as index.html.
+4. Replace ONLY that file using the post-content.json provided here, then commit.
+5. Wait for the GitHub Pages deployment to succeed. Reload with Ctrl+Shift+R.
+6. Open each of the five article pages and check headings, photos, source links and reading time.
+7. The home page and blog page labels should agree if your earlier reading-time fix works.
